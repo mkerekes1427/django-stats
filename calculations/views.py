@@ -1,5 +1,5 @@
 import pandas as pd
-from .stats_calculations import calc_ttest1
+from .stats_calculations import calc_ttest1, calc_ztest1
 
 from django.shortcuts import render
 from django.contrib import messages
@@ -43,6 +43,18 @@ def one_sample(request):
                 context = {"calculations" : False}
 
             return render(request, "one-sample.html", context=context)
+        
+        elif test == "z":
+            
+            try:
+                context = calc_ztest1(df, value, alternative, alpha)
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Calculate Z-test")
+                context = {"calculations" : False}
+
+            return render(request, "one-sample.html", context=context)
+        
+            
 
 
 
