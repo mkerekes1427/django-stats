@@ -36,7 +36,11 @@ def one_sample(request):
 
         if test == "t":
 
-            context = calc_ttest1(df, value, alternative, alpha)
+            try:
+                context = calc_ttest1(df, value, alternative, alpha)
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Calculate T-test")
+                context = {"calculations" : False}
 
             return render(request, "one-sample.html", context=context)
 
