@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<div class="container col-6" style="margin-top: 100px;">
+
+    <a href="{% url 'home' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1 bg-primary" style="margin-bottom: 150px;">Go Back</a>
+    <h1 class="text-center display-3 mb-5" >Two-Sample Tests</h1>
+
+    <input class="form-control col-6 mb-5" list="datalistOptions" id="exampleDataList" placeholder="Choose calculation">
+    <datalist id="datalistOptions">
+        <option value="T-test">
+        <option value="Paired T-test">
+        <option value="Z-Test">
+        <option value="Paired Z-test"></option>
+        <option value="Proportion (Agresti-Coul)">
+        <option value="Paired Proportion (Agresti-Caffo)">
+        <option value="Tukey">
+    </datalist>
+
+    <div class="container col-4">
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="greater_than">
+            <label class="form-check-label" for="flexRadioDefault1">Greater Than</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="less_than">
+            <label class="form-check-label" for="flexRadioDefault2">Less Than</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="not_equal">
+            <label class="form-check-label" for="flexRadioDefault2">Not Equal</label>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% endblock content %}
