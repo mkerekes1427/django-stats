@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+    .btn {
+        background-color: #4503df;
+        color: whitesmoke;
+    }
+
+</style>
+
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column" style="margin-top: 250px;">
+
+    <main class="px-3">
+        <h1 class="display-2 mb-5">Statistics on your data samples</h1>
+        <p class="lead">Choose the kind of data you have</p>
+        <a href="{% url 'one-sample' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1">One-Sample</a>
+        <a href="{% url 'two-sample' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1">Two-Sample</a>
+        </main>
+</div>
+
+{% endblock content %}
