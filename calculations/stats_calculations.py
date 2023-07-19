@@ -1,5 +1,5 @@
 import pandas as pd
-from statsmodels.stats.weightstats import ztest, zconfint
+from statsmodels.stats.weightstats import ztest, zconfint, ttest_ind
 from statsmodels.stats.proportion import proportions_ztest, proportion_confint
 from scipy.stats import ttest_1samp
 
@@ -92,3 +92,33 @@ def calc_prop1(successes, trials, value, alternative, alpha, method):
 
     return context
 
+
+def calc_ttest2(df, value, alternative, alpha, equal_var):
+    
+    col1 = df.iloc[:, 0]
+    col1_mean = col1.mean()
+    col1_std = col1.std()
+
+    col2 = df.iloc[:, 1]
+    col2_mean = col2.mean()
+    col2_std = col2.std()
+
+    t_stat, p_value, freedom = ttest_ind(col1, col2, alternative, equal_var, value=value)
+
+    low, high = (1-alpha)
+
+    context = {
+        "test" : "t",
+        "calculations" : True,
+        "col1_mean" : round(col1_mean, 4),
+        "col1_std" : round(col1_std, 4),
+        "col2_mean" : round(col2_mean, 4),
+        "col2_std" : round(col2_std, 4),
+        "t_stat" : round(t_stat, 4),
+        "p_value" : round(p_value, 4),
+        "freedom" : freedom,
+        "confidence" : (1-alpha)*100,
+        "low" : round(low, 4),
+        "high" : round(high, 4),
+        "alpha" : alpha
+    }

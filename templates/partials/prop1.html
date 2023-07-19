@@ -4,7 +4,7 @@
     <h1 class="mt-3 mb-3">Z Statistic: {{z_stat}}</h1>
     <h1 class="mb-3">P Value: {{p_value}}</h1>
     <h1 class="mb-3">Successes: {{success_pct}}%</h1>
-    <h1 class="mb-3">{{confidence}}% Interval : ({{low}}, {{high}})</h1>
+    <h1 class="mb-3">Two-Sided {{confidence}}% Interval : ({{low}}, {{high}})</h1>
 
     {% if p_value < alpha %}
     <h1 class="text-danger mt-5">Reject the Null</h1>

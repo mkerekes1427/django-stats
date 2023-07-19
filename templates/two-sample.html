@@ -4,38 +4,96 @@
 {% block content %}
 
 
+
 <div class="container col-6" style="margin-top: 100px;">
 
-    <a href="{% url 'home' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1 bg-primary" style="margin-bottom: 150px;">Go Back</a>
-    <h1 class="text-center display-3 mb-5" >Two-Sample Tests</h1>
-
-    <input class="form-control col-6 mb-5" list="datalistOptions" id="exampleDataList" placeholder="Choose calculation">
-    <datalist id="datalistOptions">
-        <option value="T-test">
-        <option value="Paired T-test">
-        <option value="Z-Test">
-        <option value="Paired Z-test"></option>
-        <option value="Proportion (Agresti-Coul)">
-        <option value="Paired Proportion (Agresti-Caffo)">
-        <option value="Tukey">
-    </datalist>
-
-    <div class="container col-4">
-
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="greater_than">
-            <label class="form-check-label" for="flexRadioDefault1">Greater Than</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="less_than">
-            <label class="form-check-label" for="flexRadioDefault2">Less Than</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="not_equal">
-            <label class="form-check-label" for="flexRadioDefault2">Not Equal</label>
-        </div>
-
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{msg}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    {% endfor %}
+    {% endif %}
+
+    <a href="{% url 'home' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1 bg-primary" style="margin-bottom: 100px;">Go Back</a>
+    <h5 class="text-center" style="margin-bottom: 100px;">The alternative options are based upon column 1 with respect to the value entered in and compare the difference of Col 1 to Col 2. 
+        For example, Col 1 greater than Col 2 by 10 or Col 1 minus Col 2 not equal to 10. Value is the numerical value that you are testing. Data must be in CSV form with column headers and must be 2 columns. Tukey can have multiple columns.</h5>
+
+    <h1 class="text-center display-3 mb-5" style="color:#ded0ff">Two-Sample Tests</h1>
+
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <p>Choose Calculation</p>
+
+        <select class="form-select mb-5" aria-label="Select test" name="test" required hx-get="{% url 'two-sample' %}" hx-target="#form-swap" hx-swap="innerHTML">
+            <option value="ind-t">Independent T-test</option>
+            <option value="pair-t">Paired T-Test</option>
+            <option value="ind-z">Independent Z-Test</option>
+            <option value="pair-z">Paired Z-Test</option>
+            <option value="ind-prop">Independent Proportion (Z-Test)</option>
+            <option value="pair-prop">Paired Proportion (Z-Test)</option>
+            <option value="tukey">Tukey</option>
+        </select>
+
+
+        <div id="form-swap">
+        
+            <div class="container col-6 mx-0 mb-5">
+
+                <p class="col-2">Alternative</p>
+
+                <div class="form-check col-8">
+                    <input class="form-check-input" type="radio" name="alternative" value="greater">
+                    <label class="form-check-label">Greater than</label>
+                </div>
+                <div class="form-check col-8">
+                    <input class="form-check-input" type="radio" name="alternative" value="less">
+                    <label class="form-check-label" >Less than</label>
+                </div>
+                <div class="form-check col-8">
+                    <input class="form-check-input" type="radio" name="alternative" value="two-sided" checked>
+                    <label class="form-check-label">Two-sided</label>
+                </div>
+
+            </div>
+
+            <div class="col-4 mb-5">
+                <input class="form-control mb-4" type="input" aria-label="value" name="value" placeholder="Enter value" required>
+                <input class="form-control mb-4" type="input" aria-label="alpha" name="alpha" placeholder="Enter alpha" required>
+            </div>
+        
+            <div class="col-4 mb-5">
+                <label class="form-label">Upload a CSV File</label>
+                <input class="form-control" type="file" name="data_file" required>
+            </div>
+
+            <input class="btn btn-lg btn-secondary fw-bold border-white" type="submit" value="Calculate" style="background-color: #4503df; margin-bottom: 100px;">
+
+        </div>
+
+    
+
+    </form>
+
+    {% if calculations %}
+
+        {% if test == "t" %}
+        {% include 'partials/ttest_1.html' %}
+        {% elif test == "z" %}
+        {% include 'partials/ztest_1.html' %}
+        {% else %}
+        {% include 'partials/prop1.html' %}
+        {% endif %}
+
+
+
+    {% else %}
+    <h2>No Calculations</h2>
+    {% endif %}
 
 </div>
 
