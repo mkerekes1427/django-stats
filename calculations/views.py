@@ -14,7 +14,7 @@ def one_sample(request):
     if request.htmx: 
         
         if request.GET.get("test") == "prop":
-            return render(request, "partials/prop1form.html", {"calculations" : False})
+            return render(request, "partials/propform.html", {"calculations" : False})
         
         return render(request, "partials/tz_form.html", {"calculations" : False})
     
@@ -97,6 +97,6 @@ def two_sample(request):
         if request.GET.get("test") in ["ind-t", "ind-z", "pair-t", "pair-z", "tukey"]:
             return render(request, "partials/tz2_form.html", {"calculations" : False})
         
-        return render(request, "partials/prop2form.html", {"calculations" : False})
+        return render(request, "partials/propform.html", {"calculations" : False})
 
-    return render(request, "two-sample.html")
+    return render(request, "two-sample.html", {"calculations" : False})
