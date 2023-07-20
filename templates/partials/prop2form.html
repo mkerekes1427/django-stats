@@ -1,0 +1,46 @@
+<div class="container col-6 mx-0 mb-5">
+
+    <p class="col-2">Alternative</p>
+
+    <div class="form-check col-8">
+        <input class="form-check-input" type="radio" name="alternative" value="greater">
+        <label class="form-check-label">Greater than</label>
+    </div>
+    <div class="form-check col-8">
+        <input class="form-check-input" type="radio" name="alternative" value="less">
+        <label class="form-check-label">Less than</label>
+    </div>
+    <div class="form-check col-8">
+        <input class="form-check-input" type="radio" name="alternative" value="two-sided" checked>
+        <label class="form-check-label">Two-sided</label>
+    </div>
+
+</div>
+
+<div class="col-4 mb-5">
+    <input class="form-control mb-4" type="input" aria-label="value" name="value" placeholder="Enter value" required>
+    <input class="form-control mb-4" type="input" aria-label="alpha" name="alpha" placeholder="Enter alpha" required>
+    <input class="form-control mb-4" type="input" aria-label="successes1" name="successes1" placeholder="Group 1 Successes" required>
+    <input class="form-control mb-4" type="input" aria-label="trials1" name="trials1" placeholder="Group 1 Trials" required>
+    <input class="form-control mb-4" type="input" aria-label="successes2" name="successes2" placeholder="Group 2 Successes" required>
+    <input class="form-control mb-4" type="input" aria-label="trials2" name="trials2" placeholder="Group 2 Trials" required>
+
+</div>
+
+<div class="container col-6 mx-0 mb-5">
+
+    <p class="col-6">Method for confidence interval</p>
+
+    <div class="form-check col-8">
+        <input class="form-check-input" type="radio" name="method" value="agresti-caffo" checked>
+        <label class="form-check-label">Agresti-Caffo</label>
+    </div>
+    <div class="form-check col-8">
+        <input class="form-check-input" type="radio" name="method" value="wald">
+        <label class="form-check-label">Wald</label>
+    </div>
+
+</div>
+
+
+<input class="btn btn-lg btn-secondary fw-bold border-white" type="submit" value="Calculate" style="background-color: #4503df; margin-bottom: 100px;">

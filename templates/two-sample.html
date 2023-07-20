@@ -34,7 +34,7 @@
             <option value="pair-t">Paired T-Test</option>
             <option value="ind-z">Independent Z-Test</option>
             <option value="pair-z">Paired Z-Test</option>
-            <option value="ind-prop">Independent Proportion (Z-Test)</option>
+            <option value="ind-prop">Independent Proportion</option>
             <option value="pair-prop">Mcnemar's Test</option>
             <option value="tukey">Tukey</option>
         </select>
@@ -101,8 +101,8 @@
         {% include 'partials/ttest_2.html' %}
         {% elif test == "2z" %}
         {% include 'partials/ztest_2.html' %}
-        {% else %}
-        {% include 'partials/prop1.html' %}
+        {% elif test == "ind-prop" %}
+        {% include 'partials/prop2.html' %}
         {% endif %}
 
 
