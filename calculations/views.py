@@ -1,5 +1,5 @@
 import pandas as pd
-from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1
+from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1, calc_ttest2
 
 from django.shortcuts import render
 from django.contrib import messages
@@ -98,5 +98,74 @@ def two_sample(request):
             return render(request, "partials/tz2_form.html", {"calculations" : False})
         
         return render(request, "partials/propform.html", {"calculations" : False})
+    
+    if request.method == "POST":
+
+        test = request.POST.get("test")
+        
+
+        if test in ["ind-t", "pair-t", "ind-z", "pair-z"]:
+
+            alternative = request.POST.get("alternative")
+            equal_var = request.POST.get("equal_var")
+
+            try:
+                value = float(request.POST.get("value"))
+                alpha = float(request.POST.get("alpha"))
+            
+            except:
+                messages.add_message(request, messages.WARNING, "Value or alpha aren't numeric")
+                return render(request, "two-sample.html", context={"calculations" : False})
+
+            file = request.FILES.get("data_file")
+            
+            try:
+                df = pd.read_csv(file)
+
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Open File")
+                return render(request, "two-sample.html", context={"calculations" : False})
+
+            if test == "ind-t":
+
+                
+                context = calc_ttest2(df, value, alternative, alpha, equal_var)
+                # except:
+                #     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                #     context = {"calculations" : False}
+        
+            elif test == "pair-t":
+                
+                try:
+                    context = calc_ztest1(df, value, alternative, alpha)
+                except:
+                    messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                    context = {"calculations" : False}
+        
+            elif test == "ind-z":
+
+                method = request.POST.get("method")
+
+                try:
+                    successes = int(request.POST.get("successes"))
+                    trials = int(request.POST.get("trials"))
+
+                except:
+                    
+                    messages.add_message(request, messages.WARNING, "Successes or trials aren't integers")
+                    context = {"calculations" : False}
+
+                    return render(request, "two-sample.html", context=context)
+
+                try:
+                    context = calc_prop1(successes, trials, value, alternative, alpha, method)
+
+                except:
+
+                    messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                    context = {"calculations" : False}
+                
+        return render(request, "two-sample.html", context=context)
+
 
     return render(request, "two-sample.html", {"calculations" : False})

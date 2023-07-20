@@ -1,7 +1,7 @@
 import pandas as pd
 from statsmodels.stats.weightstats import ztest, zconfint, ttest_ind
 from statsmodels.stats.proportion import proportions_ztest, proportion_confint
-from scipy.stats import ttest_1samp
+from scipy.stats import ttest_1samp, ttest_ind as sci_t_ind 
 
 def calc_ttest1(df, value, alternative, alpha):
 
@@ -103,12 +103,29 @@ def calc_ttest2(df, value, alternative, alpha, equal_var):
     col2_mean = col2.mean()
     col2_std = col2.std()
 
-    t_stat, p_value, freedom = ttest_ind(col1, col2, alternative, equal_var, value=value)
+    if equal_var == "pooled":
+        sci_equal_var = True
+    else:
+        sci_equal_var = False
 
-    low, high = (1-alpha)
+    if alternative == "greater":
+        stats_alternative = "larger"
+
+    elif alternative == "less":
+        stats_alternative = "smaller"
+
+    else:
+        stats_alternative = "two-sided"
+
+
+    t_stat, p_value, freedom = ttest_ind(col1, col2, stats_alternative, equal_var, value=value)
+
+    result = sci_t_ind(col1, col2, alternative=alternative, equal_var=sci_equal_var)
+
+    low, high = result.confidence_interval(1-alpha)
 
     context = {
-        "test" : "t",
+        "test" : "ind-t",
         "calculations" : True,
         "col1_mean" : round(col1_mean, 4),
         "col1_std" : round(col1_std, 4),
@@ -122,3 +139,5 @@ def calc_ttest2(df, value, alternative, alpha, equal_var):
         "high" : round(high, 4),
         "alpha" : alpha
     }
+
+    return context
