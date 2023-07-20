@@ -35,7 +35,7 @@
             <option value="ind-z">Independent Z-Test</option>
             <option value="pair-z">Paired Z-Test</option>
             <option value="ind-prop">Independent Proportion (Z-Test)</option>
-            <option value="pair-prop">Paired Proportion (Z-Test)</option>
+            <option value="pair-prop">Mcnemar's Test</option>
             <option value="tukey">Tukey</option>
         </select>
 
@@ -76,7 +76,7 @@
                 </div>
                 
                 <div class="form-check col-4">
-                    <input class="form-check-input" type="radio" name="equal_var" value="welch">
+                    <input class="form-check-input" type="radio" name="equal_var" value="unequal">
                     <label class="form-check-label">Unequal</label>
                 </div>
 
@@ -97,10 +97,10 @@
 
     {% if calculations %}
 
-        {% if test == "t" %}
-        {% include 'partials/ttest_1.html' %}
-        {% elif test == "z" %}
-        {% include 'partials/ztest_1.html' %}
+        {% if test == "2t" %}
+        {% include 'partials/ttest_2.html' %}
+        {% elif test == "2z" %}
+        {% include 'partials/ztest_2.html' %}
         {% else %}
         {% include 'partials/prop1.html' %}
         {% endif %}
