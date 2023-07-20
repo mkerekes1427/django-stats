@@ -1,5 +1,5 @@
 import pandas as pd
-from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1, calc_ttest2
+from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1, calc_ttest2, calc_ztest2, calc_prop2
 
 from django.shortcuts import render
 from django.contrib import messages
@@ -94,8 +94,14 @@ def two_sample(request):
 
     if request.htmx:
 
-        if request.GET.get("test") in ["ind-t", "ind-z", "pair-t", "pair-z", "tukey"]:
+        if request.GET.get("test") in ["ind-t", "ind-z"]:
             return render(request, "partials/tz2_form.html", {"calculations" : False})
+        
+        elif request.GET.get("test") in ["pair-t", "pair-z"]:
+            return render(request, "partials/tz2_pairedform.html", {"calculations" : False})
+        
+        elif request.GET.get("test") == "ind-prop":
+            return render(request, "partials/prop2form.html", {"calculations" : False})
         
         return render(request, "partials/propform.html", {"calculations" : False})
     
@@ -128,43 +134,64 @@ def two_sample(request):
 
             if test == "ind-t":
 
-                
-                context = calc_ttest2(df, value, alternative, alpha, equal_var)
-                # except:
-                #     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
-                #     context = {"calculations" : False}
+                try:
+                    context = calc_ttest2(df, value, alternative, alpha, equal_var, False)
+                except:
+                    messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                    context = {"calculations" : False}
         
             elif test == "pair-t":
                 
                 try:
-                    context = calc_ztest1(df, value, alternative, alpha)
+                    context = calc_ttest2(df, value, alternative, alpha, equal_var, True)
                 except:
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
         
             elif test == "ind-z":
 
-                method = request.POST.get("method")
-
                 try:
-                    successes = int(request.POST.get("successes"))
-                    trials = int(request.POST.get("trials"))
-
+                    context = calc_ztest2(df, value, alternative, alpha, equal_var, False)
                 except:
-                    
-                    messages.add_message(request, messages.WARNING, "Successes or trials aren't integers")
-                    context = {"calculations" : False}
-
-                    return render(request, "two-sample.html", context=context)
-
-                try:
-                    context = calc_prop1(successes, trials, value, alternative, alpha, method)
-
-                except:
-
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
-                
+
+            elif test == "pair-z":
+
+                try:
+                    context = calc_ztest2(df, value, alternative, alpha, equal_var, True)
+                except:
+                    messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                    context = {"calculations" : False}
+
+        elif test == "ind-prop":
+
+            alternative = request.POST.get("alternative")
+            method = request.POST.get("method")
+
+            try:
+                value = float(request.POST.get("value"))
+                alpha = float(request.POST.get("alpha"))
+            
+            except:
+                messages.add_message(request, messages.WARNING, "Value or alpha aren't numeric")
+                return render(request, "two-sample.html", context={"calculations" : False})
+
+            try:
+                successes1 = int(request.POST.get("successes1"))
+                trials1 = int(request.POST.get("trials1"))
+                successes2 = int(request.POST.get("successes2"))
+                trials2 = int(request.POST.get("trials2"))
+            except:
+                messages.add_message(request, messages.WARNING, "Successes or Trials aren't integers")
+                context = {"calculations" : False}
+
+            # try:
+            context = calc_prop2(successes1, trials1, successes2, trials2, value, alternative, alpha, method)
+            # except:
+            #     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+            #     context = {"calculations" : False}
+  
         return render(request, "two-sample.html", context=context)
 
 
