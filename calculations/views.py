@@ -1,5 +1,5 @@
 import pandas as pd
-from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1, calc_ttest2, calc_ztest2, calc_prop2
+from .stats_calculations import calc_ttest1, calc_ztest1, calc_prop1, calc_ttest2, calc_ztest2, calc_prop2, calc_mcnemar, calc_tukey
 
 from django.shortcuts import render
 from django.contrib import messages
@@ -103,7 +103,11 @@ def two_sample(request):
         elif request.GET.get("test") == "ind-prop":
             return render(request, "partials/prop2form.html", {"calculations" : False})
         
-        return render(request, "partials/propform.html", {"calculations" : False})
+        elif request.GET.get("test") == "mcnemar":
+            return render(request, "partials/mcnemarform.html", {"calculations" : False})
+        
+        else:
+            return render(request, "partials/tukeyform.html", {"calculations" : False})
     
     if request.method == "POST":
 
@@ -186,12 +190,60 @@ def two_sample(request):
                 messages.add_message(request, messages.WARNING, "Successes or Trials aren't integers")
                 context = {"calculations" : False}
 
-            # try:
-            context = calc_prop2(successes1, trials1, successes2, trials2, value, alternative, alpha, method)
-            # except:
-            #     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
-            #     context = {"calculations" : False}
-  
+            try:
+                context = calc_prop2(successes1, trials1, successes2, trials2, value, alternative, alpha, method)
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                context = {"calculations" : False}
+
+        elif test == "mcnemar":
+
+            try:
+                alpha = float(request.POST.get("alpha"))
+            except:
+                messages.add_message(request, messages.WARNING, "Alpha not numeric")
+                return render(request, "two-sample.html", context={"calculations" : False})
+            
+            try:
+                pos_pos = int(request.POST.get("pos-pos"))
+                pos_neg = int(request.POST.get("pos-neg"))
+                neg_pos = int(request.POST.get("neg-pos"))
+                neg_neg = int(request.POST.get("neg-neg"))
+            except:
+                messages.add_message(request, messages.WARNING, "Table doesn't have all integers")
+                context = {"calculations" : False}
+
+            try:
+                context = calc_mcnemar(pos_pos, pos_neg, neg_pos, neg_neg, alpha)
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                context = {"calculations" : False}
+
+        elif test == "tukey":
+
+            try:
+                alpha = float(request.POST.get("alpha"))
+            
+            except:
+                messages.add_message(request, messages.WARNING, "Alpha not numeric")
+                return render(request, "two-sample.html", context={"calculations" : False})
+
+            file = request.FILES.get("data_file")
+            
+            try:
+                df = pd.read_csv(file)
+
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Open File")
+                return render(request, "two-sample.html", context={"calculations" : False})
+        
+            try:
+                context = calc_tukey(df, alpha)
+            except:
+                messages.add_message(request, messages.WARNING, "Couldn't Calculate")
+                context = {"calculations" : False}
+            
+
         return render(request, "two-sample.html", context=context)
 
 

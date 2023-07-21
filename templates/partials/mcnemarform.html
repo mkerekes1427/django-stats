@@ -1,0 +1,32 @@
+<div class="container col-6 mx-0 mb-5">
+ 
+  <div class="col-6 mb-5">
+    <input class="form-control mb-4" type="input" aria-label="alpha" name="alpha" placeholder="Enter alpha" required>
+  </div>
+
+    <p>Enter number of pairs</p>
+   
+    <table class="table table-sm w-auto">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col" class="text-light px-5">Positive</th>
+          <th scope="col" class="text-light px-5">Negative</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="text-light">Positive</th>
+          <td><input type="text" name="pos-pos" required></td>
+          <td><input type="text" name="neg-pos" required></td>
+        </tr>
+        <tr>
+          <th scope="row" class="text-light">Negative</th>
+          <td><input type="text" name="pos-neg" required></td>
+          <td><input type="text" name="neg-neg" required></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <input class="btn btn-lg btn-secondary fw-bold border-white" type="submit" value="Calculate" style="background-color: #4503df; margin-top: 50px; margin-bottom: 100px;">

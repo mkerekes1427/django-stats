@@ -1,0 +1,13 @@
+<div class="container" style="margin-bottom: 100px;">
+
+
+    <h1 class="mt-3 mb-3">Statistic: {{stat}}</h1>
+    <h1 class="mb-3">P Value: {{p_value}}</h1>
+    
+    {% if p_value < alpha %}
+    <h1 class="text-danger mt-5">Reject the Null</h1>
+    {% else %}
+    <h1 class="text-success mt-5">Fail to reject the Null</h1>
+    {% endif %}
+
+</div>

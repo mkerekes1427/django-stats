@@ -1,7 +1,9 @@
 import pandas as pd
 from statsmodels.stats.weightstats import ztest, zconfint, ttest_ind, CompareMeans, DescrStatsW
 from statsmodels.stats.proportion import proportions_ztest, proportion_confint, test_proportions_2indep, confint_proportions_2indep
-from scipy.stats import ttest_1samp, ttest_ind as sci_t_ind 
+from statsmodels.stats.contingency_tables import mcnemar
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from scipy.stats import ttest_1samp, ttest_ind as sci_t_ind
 
 def calc_ttest1(df, value, alternative, alpha):
 
@@ -230,6 +232,47 @@ def calc_prop2(successes1, trials1, successes2, trials2, value, alternative, alp
         "low" : round(low, 4),
         "high" : round(high, 4),
         "alpha" : alpha
+    }
+
+    return context
+
+
+def calc_mcnemar(pos_pos, pos_neg, neg_pos, neg_neg, alpha):
+
+    table = [[pos_pos, neg_pos],
+            [pos_neg, neg_neg]]
+    
+    calculation = mcnemar(table)
+
+    stat = calculation.statistic
+    p_value = calculation.pvalue
+
+    context = {
+        "test" : "mcnemar",
+        "calculations" : True,
+        "stat" : round(stat, 4),
+        "p_value" : round(p_value, 4),
+        "alpha" : alpha
+    }
+
+    return context
+
+
+def calc_tukey(df, alpha):
+
+    tukey_dict = {"response" : [], "groups" : []}
+
+    for i, col in enumerate(df.columns):
+        for row in df[col]:
+            tukey_dict["response"].append(row)
+            tukey_dict["groups"].append(df.columns[i])
+
+    tukey = pairwise_tukeyhsd(tukey_dict["response"], tukey_dict["groups"], alpha).summary()
+
+    context = {
+        "test" : "tukey",
+        "calculations" : True,
+        "tukey" : tukey.as_html()
     }
 
     return context
