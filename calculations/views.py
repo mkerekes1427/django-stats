@@ -92,7 +92,7 @@ def one_sample(request):
 
 def two_sample(request):
 
-    if request.htmx:
+    if request.htmx and request.method == "GET":
 
         if request.GET.get("test") in ["ind-t", "ind-z"]:
             return render(request, "partials/tz2_form.html", {"calculations" : False})
@@ -110,6 +110,8 @@ def two_sample(request):
             return render(request, "partials/tukeyform.html", {"calculations" : False})
     
     if request.method == "POST":
+
+        template = "two-sample.html"
 
         test = request.POST.get("test")
         
@@ -140,6 +142,7 @@ def two_sample(request):
 
                 try:
                     context = calc_ttest2(df, value, alternative, alpha, equal_var, False)
+                    template = "partials/ttest_2.html"
                 except:
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
@@ -148,6 +151,7 @@ def two_sample(request):
                 
                 try:
                     context = calc_ttest2(df, value, alternative, alpha, equal_var, True)
+                    template = "partials/ttest_2.html"
                 except:
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
@@ -156,6 +160,7 @@ def two_sample(request):
 
                 try:
                     context = calc_ztest2(df, value, alternative, alpha, equal_var, False)
+                    template = "partials/ztest_2.html"
                 except:
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
@@ -164,6 +169,7 @@ def two_sample(request):
 
                 try:
                     context = calc_ztest2(df, value, alternative, alpha, equal_var, True)
+                    template = "partials/ztest_2.html"
                 except:
                     messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                     context = {"calculations" : False}
@@ -192,6 +198,7 @@ def two_sample(request):
 
             try:
                 context = calc_prop2(successes1, trials1, successes2, trials2, value, alternative, alpha, method)
+                template = "partials/prop2.html"
             except:
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
@@ -215,6 +222,7 @@ def two_sample(request):
 
             try:
                 context = calc_mcnemar(pos_pos, pos_neg, neg_pos, neg_neg, alpha)
+                template = "partials/mcnemar.html"
             except:
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
@@ -239,12 +247,13 @@ def two_sample(request):
         
             try:
                 context = calc_tukey(df, alpha)
+                template = "partials/tukey.html"
             except:
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
             
 
-        return render(request, "two-sample.html", context=context)
+        return render(request, template, context=context)
 
 
     return render(request, "two-sample.html", {"calculations" : False})

@@ -3,8 +3,6 @@
 
 {% block content %}
 
-
-
 <div class="container col-6" style="margin-top: 100px;">
 
     {% if messages %}
@@ -18,12 +16,12 @@
 
     <a href="{% url 'home' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1 bg-primary" style="margin-bottom: 100px;">Go Back</a>
     <h5 class="text-center" style="margin-bottom: 100px;">The alternative options are based upon column 1 with respect to the value entered in and compare the difference of Col 1 to Col 2. 
-        For example, Col 1 greater than Col 2 by 10 or Col 1 minus Col 2 not equal to 10. Value is the numerical value that you are testing. Data must be in CSV form with column headers and must be 2 columns. Tukey can have multiple columns.</h5>
+        For example, Col 1 greater than Col 2 by 10 or Col 1 minus Col 2 not equal to 10. Value is the numerical null value that you are testing. Data must be in CSV form with column headers and will take the first 2 columns. Tukey can have multiple columns.</h5>
 
     <h1 class="text-center display-3 mb-5" style="color:#ded0ff">Two-Sample Tests</h1>
 
 
-    <form method="POST" enctype="multipart/form-data">
+    <form hx-post="{%url 'two-sample' %}" hx-target="#calculations-div" enctype="multipart/form-data">
 
         {% csrf_token %}
 
@@ -95,28 +93,28 @@
 
     </form>
 
-    {% if calculations %}
-
-        {% if test == "2t" %}
-        {% include 'partials/ttest_2.html' %}
-        {% elif test == "2z" %}
-        {% include 'partials/ztest_2.html' %}
-        {% elif test == "ind-prop" %}
-        {% include 'partials/prop2.html' %}
-        {% elif test == "mcnemar" %}
-        {% include 'partials/mcnemar.html' %}
-        {% else %}
-        {% include 'partials/tukey.html' %}
-        {% endif %}
-
-
-
-    {% else %}
-    <h2>No Calculations</h2>
-    {% endif %}
+    <div id="calculations-div"></div>
 
 </div>
 
+<!-- For the Tukey Table, we color False and True green and red. -->
+<script>
 
+    htmx.onLoad(function(content) {
+
+    var table = document.getElementsByClassName("simpletable");
+
+    var cells = table[0].getElementsByTagName("td");
+    
+    for (var i in cells) {
+      
+        if (cells[i].innerHTML === "False")
+            cells[i].className = "text-success";
+     
+        else if (cells[i].innerHTML === "True")
+            cells[i].className = "text-danger";
+    }
+})
+</script>
 
 {% endblock content %}
