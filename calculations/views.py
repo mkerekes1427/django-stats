@@ -11,17 +11,17 @@ def home(request):
 
 def one_sample(request):
 
-    if request.htmx: 
+    if request.htmx and request.method == "GET": 
         
         if request.GET.get("test") == "prop":
             return render(request, "partials/propform.html", {"calculations" : False})
         
         return render(request, "partials/tz_form.html", {"calculations" : False})
     
-    
 
     if request.method == "POST":
 
+        template = "one-sample.html"
 
         test = request.POST.get("test")
         alternative = request.POST.get("alternative")
@@ -50,6 +50,7 @@ def one_sample(request):
 
             try:
                 context = calc_ttest1(df, value, alternative, alpha)
+                template = "partials/ttest_1.html"
             except:
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
@@ -58,6 +59,7 @@ def one_sample(request):
             
             try:
                 context = calc_ztest1(df, value, alternative, alpha)
+                template = "partials/ztest_1.html"
             except:
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
@@ -79,13 +81,14 @@ def one_sample(request):
 
             try:
                 context = calc_prop1(successes, trials, value, alternative, alpha, method)
+                template = "partials/prop1.html"
 
             except:
 
                 messages.add_message(request, messages.WARNING, "Couldn't Calculate")
                 context = {"calculations" : False}
             
-        return render(request, "one-sample.html", context=context)
+        return render(request, template, context=context)
 
 
     return render(request, "one-sample.html", {"calculations" : False})

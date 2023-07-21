@@ -18,12 +18,12 @@
 
     <a href="{% url 'home' %}" class="btn btn-lg btn-secondary fw-bold border-white mx-1 bg-primary" style="margin-bottom: 100px;">Go Back</a>
     <h5 class="text-center" style="margin-bottom: 100px;">The alternative options are based upon column 1 with respect to the value entered in. 
-        For example, Col 1 greater than 10 or Col 1 not equal to 10. Value is the numerical value that you are testing. Data must be in CSV form with column header and must be in a single column.</h5>
+        For example, Col 1 greater than 10 or Col 1 not equal to 10. Value is the numerical value that you are testing. Data must be in CSV form with column header and will only take data from first column.</h5>
 
     <h1 class="text-center display-3 mb-5" style="color:#ded0ff">One-Sample Tests</h1>
 
 
-    <form method="POST" enctype="multipart/form-data">
+    <form hx-post="{% url 'one-sample' %}" hx-target="#calculations-div" enctype="multipart/form-data">
 
         {% csrf_token %}
 
@@ -75,21 +75,7 @@
 
     </form>
 
-    {% if calculations %}
-
-        {% if test == "t" %}
-        {% include 'partials/ttest_1.html' %}
-        {% elif test == "z" %}
-        {% include 'partials/ztest_1.html' %}
-        {% else %}
-        {% include 'partials/prop1.html' %}
-        {% endif %}
-
-
-
-    {% else %}
-    <h2>No Calculations</h2>
-    {% endif %}
+   <div id="calculations-div"></div>
 
 </div>
 
